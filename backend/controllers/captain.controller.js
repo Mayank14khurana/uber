@@ -62,6 +62,7 @@ module.exports.loginCaptain = async (req, res) => {
     const token = captain.generateAuthToken();
     res.cookie('token',token);
     return res.status(200).json({
+        success:true,
         token, captain
     })
 

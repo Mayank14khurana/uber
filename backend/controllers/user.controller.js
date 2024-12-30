@@ -8,13 +8,13 @@ module.exports.registerUser = async function (req, res, next) {
     const errors = validationResult(req);
     
     if (!errors.isEmpty()) {
+        console.log(errors.array)
         return res.status(400).json({
             errors: errors.array()
         })
     }
-    
     const { fullName, password, email } = req.body;
-     const alreadyExists =userModel.findOne({email});
+     const alreadyExists = await userModel.findOne({email});
      if(alreadyExists){
         return res.status(400).json({message:"User already Exists"})
      }
@@ -32,7 +32,7 @@ module.exports.registerUser = async function (req, res, next) {
 module.exports.loginUser = async (req, res, next) => {
 
     const errors = validationResult(req);
-
+       
     if (!errors.isEmpty()) {
         return res.status(400).json({
             errors: errors.array()
@@ -55,7 +55,8 @@ module.exports.loginUser = async (req, res, next) => {
 
     const token = user.generateAuthToken();
     res.cookie('token',token)
-     res.status(200).json({
+    return  res.status(200).json({
+        success:true,
         token,user
      })
 }
@@ -64,10 +65,11 @@ exports.getUserProfile=async (req,res,next)=>{
     res.status(200).json(req.user);
 }
 exports.logoutUser=async(req,res,next)=>{
-    const token =req.cookies.token|| req.headers.authrization?.split(' ')[1]; 
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
     await blackListTokenModel.create({token});
     res.clearCookie('token');   
     res.status(200).json({
-        message:"Logged Out Successfully"
+        success:true,
+        message:"Logged Out Successfully" 
     })
-}
+} 

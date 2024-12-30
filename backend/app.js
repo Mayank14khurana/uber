@@ -8,7 +8,11 @@ const userRoutes=require('./routes/user.route');
 const captainRoutes=require('./routes/captain.route');
 connectToDb();
 
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: ["Authorization", "Content-Type"],
+}));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
